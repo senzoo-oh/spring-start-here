@@ -13,3 +13,6 @@ build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
+
+# Maven으로 빌드할때 저장되는 jar파일들이 담겨있는 폴더임
+target
