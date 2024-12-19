@@ -21,9 +21,8 @@ public class Main {
         comment.setText("Demo comment");
         comment.setAuthor("Natasha");
 
-        String value = service.publishComment(comment);
-
-        logger.info(value);
-
+        service.publishComment(comment);
+        service.deleteComment(comment);
+        service.editComment(comment);
     }
 }
