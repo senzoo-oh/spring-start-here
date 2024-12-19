@@ -3,6 +3,7 @@ package org.example.aspects;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.example.model.Comment;
 
 import java.util.Arrays;
 import java.util.logging.Logger;
@@ -25,9 +26,14 @@ public class LoggingAspect {
 
         logger.info("Method " + methodName + " with parameters " + Arrays.asList(arguments) + " will execute");
 
-        Object returnedByMethod = joinPoint.proceed();
+        Comment comment = new Comment();
+        comment.setText("Some other text!");
+        Object[] newArguments = {comment};
+
+        Object returnedByMethod = joinPoint.proceed(newArguments);
 
         logger.info("Method executed and returned " + returnedByMethod);
-        return returnedByMethod;    // 가로챈 메서드의 반환 값을 반환함
+
+        return "FAILED";    // 가로챈 메서드의 반환 값을 반환함
     }
 }
