@@ -10,10 +10,13 @@ public class Main {
 
         var c = new AnnotationConfigApplicationContext(ProjectConfiguration.class);
 
-        var commentService = c.getBean(CommentService.class);
+        var service = c.getBean(CommentService.class);
 
-        commentService.sendComment(new Comment());
-        commentService.sendComment(new Comment());
+        Comment comment = new Comment();
+        comment.setText("Demo comment");
+        comment.setAuthor("Natasha");
+
+        service.publishComment(comment);
 
     }
 }
