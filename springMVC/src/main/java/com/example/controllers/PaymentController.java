@@ -22,7 +22,6 @@ public class PaymentController {
             @RequestBody PaymentDetails paymentDetails
     ) {
         logger.info("Received payment " + paymentDetails.getAmount());
-        logger.info("Received bank " + paymentDetails.getBank());
 
         return ResponseEntity
                 .status(HttpStatus.ACCEPTED)
