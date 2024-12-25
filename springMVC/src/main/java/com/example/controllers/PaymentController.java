@@ -1,30 +1,31 @@
 package com.example.controllers;
 
-import com.example.exceptions.NotEnoughMoneyException;
-import com.example.model.ErrorDetails;
+import com.example.model.Payment;
 import com.example.model.PaymentDetails;
-import com.example.service.PaymentService;
+import com.example.proxy.PaymentsProxy;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.UUID;
 import java.util.logging.Logger;
 
 @RestController
 public class PaymentController {
 
-    private static Logger logger = Logger.getLogger(PaymentController.class.getName());
+    private final PaymentsProxy paymentsProxy;
+
+    public PaymentController(PaymentsProxy paymentsProxy) {
+        this.paymentsProxy = paymentsProxy;
+    }
 
     @PostMapping("/payment")
-    public ResponseEntity<PaymentDetails> makePayment(
-            @RequestBody PaymentDetails paymentDetails
+    public Payment createPayment(
+            @RequestBody Payment payment
     ) {
-        logger.info("Received payment " + paymentDetails.getAmount());
-
-        return ResponseEntity
-                .status(HttpStatus.ACCEPTED)
-                .body(paymentDetails);
+        String requestId = UUID.randomUUID().toString();
+        return paymentsProxy.createPayment(requestId, payment);
     }
 }
