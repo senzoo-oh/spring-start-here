@@ -1,11 +1,11 @@
 package com.example.service;
 
+import com.example.exceptions.AccountNotFoundException;
 import com.example.model.Account;
 import com.example.repositories.AccountRepositorySpringData;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.security.auth.login.AccountNotFoundException;
 import java.math.BigDecimal;
 import java.util.List;
 
