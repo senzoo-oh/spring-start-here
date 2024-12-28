@@ -3,25 +3,22 @@ package com.example.controllers;
 import com.example.dto.TransferRequest;
 import com.example.model.Account;
 import com.example.service.TransferService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import javax.security.auth.login.AccountNotFoundException;
 
 @RestController
 public class AccountController {
 
     private final TransferService transferService;
 
-    public AccountController(TransferService transferService) {
+    public AccountController (TransferService transferService) {
         this.transferService = transferService;
     }
 
     @PostMapping("/transfer")
-    public void transferMoney(
-            @RequestBody TransferRequest request) {
+    public void transferMoney (
+            @RequestBody TransferRequest request) throws AccountNotFoundException {
         transferService.transferMoney(
                 request.getSenderAccountId(),
                 request.getReceiverAccountId(),
@@ -29,7 +26,14 @@ public class AccountController {
     }
 
     @GetMapping("/accounts")
-    public List<Account> getAllAccounts() {
-        return transferService.getAllAccounts();
+    public Iterable<Account> getAllAccounts (
+            @RequestParam(required=false) String name
+    ) {
+        if (name==null) {
+            return transferService.getAllAccounts();
+        }
+        else {
+            return transferService.findAccountsByName(name);
+        }
     }
 }
