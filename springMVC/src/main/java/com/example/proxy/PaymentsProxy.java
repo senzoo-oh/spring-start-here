@@ -8,6 +8,8 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 import java.util.UUID;
 
@@ -15,29 +17,24 @@ import java.util.UUID;
 @Component
 public class PaymentsProxy {
 
-    private final RestTemplate rest;
+    private final WebClient webClient;
 
     @Value("${name.service.url}")
-    private String paymentsServiceUrl;
+    private String url;
 
-    public PaymentsProxy(RestTemplate rest) {
-        this.rest = rest;
+    public PaymentsProxy(WebClient webClient) {
+        this.webClient = webClient;
     }
 
-    public Payment createPayment(Payment payment) {
-        String uri = paymentsServiceUrl + "/payment";
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("requestId", UUID.randomUUID().toString());
-
-        HttpEntity<Payment> httpEntity = new HttpEntity<>(payment, headers);
-
-        ResponseEntity<Payment> response =
-                rest.exchange(uri,
-                        HttpMethod.POST,
-                        httpEntity,
-                        Payment.class);
-
-        return response.getBody();
+    public Mono<Payment> createPayment(
+            String requestId,
+            Payment payment
+    ) {
+        return webClient.post()
+                .uri(url + "/payment")
+                .header("requestId", requestId)
+                .body(Mono.just(payment), Payment.class)
+                .retrieve()
+                .bodyToMono(Payment.class);
     }
 }
